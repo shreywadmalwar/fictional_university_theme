@@ -2,16 +2,8 @@
 get_header();
 while (have_posts()) {
   the_post();
+  pageBanner();
   ?>
-     <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url( <?php echo get_theme_file_uri('/images/ocean.jpg') ?>)"></div>
-      <div class="page-banner__content container container--narrow">
-        <h1 class="page-banner__title"><?php the_title(); ?></h1>
-        <div class="page-banner__intro">
-          <p>Dont Forget To Replace me later</p>
-        </div>
-      </div>
-    </div>
 
     <div class="container container--narrow page-section">
     
@@ -51,7 +43,7 @@ while (have_posts()) {
               <li class="professor-card__list-item">
                 <a class="professor-card" href="<?php the_permalink(); ?>">
 
-                  <img class="professor-card__image" src="<?php the_post_thumbnail_url() ?>">
+                  <img class="professor-card__image" src="<?php the_post_thumbnail_url("professorLandscape") ?>">
                   <span class="professor-card__name">
                     <?php the_title(); ?>
                   </span>
@@ -120,16 +112,13 @@ while (have_posts()) {
               wp_reset_postdata();
                         ?>
             </div>
-    </div>
+          </div>
           <?php
             }
-                    ?>
+          ?>
   <?php
-}
-
-?>
-
-           
+    }
+  ?>         
 <?php
 get_footer();
 ?>
