@@ -15,7 +15,7 @@ while (have_posts()) {
         </div>
 
         <div class="generic-content">
-            <?php the_content(); ?>
+            <?php the_field('main_body_content'); ?>
             <?php
             $relatedProfessor = new WP_Query(array(
               'posts_per_page' => -1,
