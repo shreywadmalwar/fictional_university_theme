@@ -3,8 +3,8 @@
 get_header();
 pageBanner(
   array(
-    'title' => 'All Program',
-    'subtitle' => 'Transform Your Future: Our Program Selection'
+    'title' => 'Our Campuses',
+    'subtitle' => 'We have several convininently located campuses.'
   )
 );
 ?>
