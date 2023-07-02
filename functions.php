@@ -1,12 +1,18 @@
 <?php
 
+
+require get_theme_file_path('/inc/like-route.php');
 require get_theme_file_path( '/inc/search-routes.php' );
 function university_custom_rest() {
-  register_rest_field('post', 'authorName', array(
-    'get_callback' => function () {
+  register_rest_field('post', 'authorName', array('get_callback' => function () {
       return get_the_author();
     }
   ));
+  register_rest_field('notes', 'userNoteCount', array('get_callback' => function () {
+      return count_user_posts(get_current_user_id(), 'notes');
+    }
+  ));
+  
 }
 
 add_action('rest_api_init', 'university_custom_rest');
@@ -57,7 +63,8 @@ function university_files()
     wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
 
     wp_localize_script( 'main-university-js', 'universityData', array(
-      'root_url' => get_site_url()
+      'root_url' => get_site_url(),
+      'nonce' => wp_create_nonce('wp_rest')
     ));
 }
 
@@ -133,4 +140,54 @@ function noSubsAdminBar(){
   }   
 }
 
+add_filter('login_headerurl', 'ourHeaderUrl');
+
+function ourHeaderUrl() {
+  return esc_url(site_url('/'));  
+}
+
+
+add_action('login_enqueue_scripts', 'ourLoginCSS');
+
+function ourLOginCSS(){
+  wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+  wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
+  wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
+}
+
+add_filter('login_headertitle', 'ourLoginTitle');
+
+function ourLoginTitle() {
+  return get_bloginfo('name');
+}
+
+
+
+add_filter('wp_insert_post_data', 'makeNotesPrivate', 10, 2);
+
+function makeNotesPrivate($data, $postarr) {
+
+  if ($data['post_type'] == 'notes') {
+
+    if(count_user_posts( get_current_user_id(), 'notes') > 4 AND !$postarr['ID'] ) {
+      die("You have reached you note limit.");
+
+    }
+    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_title'] = sanitize_text_field($data['post_title']);
+  }
+
+  if ($data['post_type'] == 'notes' && $data['post_status'] != 'trash') {
+    $data['post_status'] = 'private';
+  }
+  return $data;
+}
+
+add_filter('ai1wm_exclude_content_from_export', 'ignoreCertainFiles');
+
+function ignoreCertainFiles($exclude_filters){
+  $exclude_filters[] = 'themes\fictional-university-theme\node_modules';
+  return $exclude_filters;
+
+}
 ?>
