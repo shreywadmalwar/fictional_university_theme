@@ -62,14 +62,10 @@ while (have_posts()) {
 
           ?>
         </ul>
-      </div>
-      <?php } ?>
-
-      <div class="generic-content">
-        <?php the_content(); ?>
-      </div>
+        <?php get_search_form(); ?>
     </div>
-    <?php
+<?php }
+
 }
 get_footer();
 
